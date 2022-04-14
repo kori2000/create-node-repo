@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+
+  #DOCKER_BUILD:
+    container_name: #DOCKER_CONTAINER
+    restart: always
+    build:
+      context: ./
+    env_file:
+      - .env
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}

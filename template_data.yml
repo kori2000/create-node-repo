@@ -1,0 +1,14 @@
+# An template file for faster setup
+data:
+  app_name: my-personal-api
+  app_keywords: test1, test2, test3
+  app_desc: some ai generated text date from keywords
+  app_exec: npm
+  server_port: 5555
+  git_token: xxx
+  git_name: my-personal-api
+  git_description: some short desc  
+  git_private: false
+  git_gitignore_template: node
+  git_license_template: mit
+  
