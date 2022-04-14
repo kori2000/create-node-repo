@@ -104,5 +104,6 @@ dist
 .tern-port
 
 # Custom
-template-data/*
+.DS_Store
+#template-data/*
 log.txt
