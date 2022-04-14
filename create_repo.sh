@@ -149,11 +149,74 @@ pgb () {
   done
 }
 
+# Loads the preconfigured settings from the setup file
+#
+#   Arguments   : ...
+#   Return value: Custom Settings Vars
+loadTemplateData() {
+
+  echo "  ${CGREEN}Template data configurtion located [template_data.yml]...${CRESET}"
+  echo ""
+
+  CU_APP_NAME=`cat template_data.yml | grep app_name | cut -d':' -f2 | cut -c 2-`
+  CU_APP_KEYWORDS=`cat template_data.yml | grep app_keywords | cut -d':' -f2 | cut -c 2-`
+  CU_APP_DESC=`cat template_data.yml | grep app_desc | cut -d':' -f2 | cut -c 2-`
+  CU_APP_EXEC=`cat template_data.yml | grep app_exec | cut -d':' -f2 | cut -c 2-`
+  CU_SERVER_PORT=`cat template_data.yml | grep server_port | cut -d':' -f2 | cut -c 2-`
+  CU_LOCAL_FOLDER=`cat template_data.yml | grep local_folder | cut -d':' -f2 | cut -c 2-`
+  CU_GIT_TOKEN=`cat template_data.yml | grep git_token | cut -d':' -f2 | cut -c 2-`
+  CU_GIT_USER=`cat template_data.yml | grep git_user | cut -d':' -f2 | cut -c 2-`
+  CU_GIT_NAME=`cat template_data.yml | grep git_name | cut -d':' -f2 | cut -c 2-`
+  CU_GIT_DESC=`cat template_data.yml | grep git_desc | cut -d':' -f2 | cut -c 2-`
+  CU_GIT_PRIVATE=`cat template_data.yml | grep git_private | cut -d':' -f2 | cut -c 2-`
+  CU_GIT_IG_TEMPLATE=`cat template_data.yml | grep git_gitignore_template | cut -d':' -f2 | cut -c 2-`
+  CU_GIT_LC_TEMPLATE=`cat template_data.yml | grep git_license_template | cut -d':' -f2 | cut -c 2-`
+  
+  echo "  ${CCYAN=}CU_APP_NAME..........= $CU_APP_NAME ${CRESET}"
+  echo "  ${CCYAN=}CU_APP_KEYWORDS......= $CU_APP_KEYWORDS ${CRESET}"
+  echo "  ${CCYAN=}CU_APP_DESC..........= $CU_APP_DESC ${CRESET}"
+  echo "  ${CCYAN=}CU_APP_EXEC..........= $CU_APP_EXEC ${CRESET}"
+  echo "  ${CCYAN=}CU_SERVER_PORT.......= $CU_SERVER_PORT ${CRESET}"
+  echo "  ${CCYAN=}CU_LOCAL_FOLDER......= $CU_LOCAL_FOLDER ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_TOKEN.........= $CU_GIT_TOKEN ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_USER..........= $CU_GIT_USER ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_NAME..........= $CU_GIT_NAME ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_DESC..........= $CU_GIT_DESC ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_PRIVATE.......= $CU_GIT_PRIVATE ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_IG_TEMPLATE...= $CU_GIT_IG_TEMPLATE ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_LC_TEMPLATE...= $CU_GIT_LC_TEMPLATE ${CRESET}"
+  echo ""
+
+}
+
+createLocalFolder() {
+  DIR="~/${CU_LOCAL_FOLDER}"
+  if [ -d "`eval echo ${DIR//>}`" ]
+    then
+      pgb 85
+      echo "   ==> LOCAL..: ${DIR}/${CU_GIT_NAME}"
+      LOCAL_HOME=$(eval echo ~$USER)
+      REPO_FOLDER="${LOCAL_HOME}/${CU_LOCAL_FOLDER}/${CU_GIT_NAME}"
+      $(mkdir ${REPO_FOLDER})
+  fi
+}
+removeLocalFolder() {
+  DIR="~/${CU_LOCAL_FOLDER}"
+  if [ -d "`eval echo ${DIR//>}`" ]
+    then
+      pgb 85
+      echo "   ==> LOCAL..: ${DIR}/${CU_GIT_NAME}"
+      LOCAL_HOME=$(eval echo ~$USER)
+      REPO_FOLDER="${LOCAL_HOME}/${CU_LOCAL_FOLDER}/${CU_GIT_NAME}"
+      $(rm -rf ${REPO_FOLDER})
+  fi
+}
+
 # --+---------------------------------------------------------------
 #   | END
 # --+---------------------------------------------------------------
 
-echo
+echo ""
 
 # For Mac, # Select GNU sed
 if [[ uname = "Darwin" ]]
@@ -189,24 +252,7 @@ if [[ $CHOICE = "0" ]]
     OC_TEMPLATE_DATA=$(find ./ -name 'template_data.yml')
     if [[ $OC_TEMPLATE_DATA != "" ]]
       then 
-        echo "  ${CGREEN}Template data configurtion located [template_data.yml]...${CRESET}"
-        echo ""
-
-        CU_APP_NAME=`cat template_data.yml | grep app_name | cut -d':' -f2 | cut -c 2-`
-        CU_APP_KEYWORDS=`cat template_data.yml | grep app_keywords | cut -d':' -f2 | cut -c 2-`
-        CU_APP_DESC=`cat template_data.yml | grep app_desc | cut -d':' -f2 | cut -c 2-`
-        CU_APP_EXEC=`cat template_data.yml | grep app_exec | cut -d':' -f2 | cut -c 2-`
-        CU_SERVER_PORT=`cat template_data.yml | grep server_port | cut -d':' -f2 | cut -c 2-`
-        CU_GIT_REPO=`cat template_data.yml | grep git_repo | cut -d':' -f2 | cut -c 2-`
-        
-        echo "  ${CCYAN=}CU_APP_NAME.......= $CU_APP_NAME ${CRESET}"
-        echo "  ${CCYAN=}CU_APP_KEYWORDS...= $CU_APP_KEYWORDS ${CRESET}"
-        echo "  ${CCYAN=}CU_APP_DESC.......= $CU_APP_DESC ${CRESET}"
-        echo "  ${CCYAN=}CU_APP_EXEC.......= $CU_APP_EXEC ${CRESET}"
-        echo "  ${CCYAN=}CU_SERVER_PORT....= $CU_SERVER_PORT ${CRESET}"
-        echo "  ${CCYAN=}CU_GIT_REPO.......= $CU_GIT_REPO ${CRESET}"
-
-        echo ""
+        loadTemplateData
 
       else
 
@@ -230,9 +276,35 @@ if [[ $CHOICE = "0" ]]
         printf "  # "
         read CU_APP_EXEC
 
+        echo "  ${CBLUE}Git Token (Generate here: https://github.com/settings/tokens): ${CRESET}"
+        printf "  # "
+        read CU_GIT_TOKEN
+
+        echo "  ${CBLUE}Git User Name: ${CRESET}"
+        printf "  # "
+        read CU_GIT_USER
+
         echo "  ${CBLUE}Git Repository Name (for default [like app-name] leave empty): ${CRESET}"
         printf "  # "
-        read CU_GIT_REPO
+        read CU_GIT_NAME
+
+        echo "  ${CBLUE}Git Repository Description (for default [like app-desc] leave empty): ${CRESET}"
+        printf "  # "
+        read CU_GIT_DESC
+
+        echo "  ${CBLUE}Git Repository is private (for defaul [is false] leave empty): ${CRESET}"
+        printf "  # "
+        read CU_GIT_PRIVATE
+
+        echo "  ${CBLUE}Git Repository with Ignore Template (for defaul [node] leave empty): ${CRESET}"
+        printf "  # "
+        read CU_GIT_IG_TEMPLATE
+
+        echo "  ${CBLUE}Git Repository with License Template (for defaul [MIT] leave empty): ${CRESET}"
+        printf "  # "
+        read CU_GIT_LC_TEMPLATE
+
+        echo ""
 
     fi
 
@@ -254,14 +326,33 @@ if [[ $CHOICE = "0" ]]
         $(rm -rf template-data/)
         $(mkdir template-data)
         $(echo "" > template-data/.gitkeep)
-
     fi
 
     pgb 0
     
-    if [[ $CU_GIT_REPO = "" ]] 
+    if [[ $CU_GIT_NAME = "" ]] 
       then 
-        CU_GIT_REPO=$CU_APP_NAME
+        CU_GIT_NAME=$CU_APP_NAME
+    fi
+
+    if [[ $CU_GIT_DESC = "" ]] 
+      then 
+        CU_GIT_DESC=$CU_APP_DESC
+    fi
+
+    if [[ $CU_GIT_PRIVATE = "" ]] 
+      then 
+        CU_GIT_PRIVATE=false
+    fi
+
+    if [[ $CU_GIT_IG_TEMPLATE = "" ]] 
+      then 
+        CU_GIT_IG_TEMPLATE="node"
+    fi
+
+    if [[ $CU_GIT_LC_TEMPLATE = "" ]] 
+      then 
+        CU_GIT_LC_TEMPLATE="mit"
     fi
     
     pgb 25
@@ -283,62 +374,60 @@ if [[ $CHOICE = "0" ]]
     # export IN_GIT_OC_TOKEN=$CU_GIT_OC_TOKEN
 
     # export IN_PVC=""
+
     
     pgb 25
     echo "   *README.md  "
     envsubst < templates/_README.md > template-data/README.md
 
     pgb 50
-    echo "   *Route    "
-    envsubst < data/oc-pattern-route.yaml > templates/$CU_APP_NAME-route.yaml
+    echo "   *Create Repository    "
+    PAYLOAD="{ \"name\": \"${CU_GIT_NAME}\", \"description\": \"${CU_GIT_DESC}\", \"auto_init\": false, \"private\": ${CU_GIT_PRIVATE}, \"license_template\": \"${CU_GIT_LC_TEMPLATE}\", \"gitignore_template\": \"${CU_GIT_IG_TEMPLATE}\" }"
 
-    # pgb 75
-    # echo "   *Build    "
-    # envsubst < data/oc-pattern-build.yaml > templates/$CU_APP_NAME-build.yaml
+    echo "   ==> PAYLOAD... " #${PAYLOAD}"
+    curl -i --no-progress-meter -H "Authorization: token ${CU_GIT_TOKEN}" --data "${PAYLOAD}" https://api.github.com/user/repos >> log.txt
+    
+    pgb 75
+    echo "   ==> CREATED: https://github.com/${CU_GIT_USER}/${CU_GIT_NAME}"
+    # createLocalFolder
 
-    # pgb 100
-    # echo "   *Deploy   "
-    # envsubst < data/oc-pattern-deploy.yaml > templates/$CU_APP_NAME-deploy.yaml   
+    pgb 100
+    echo "   *UPLOAD Readme.md"
+    README_BASE64=$(cat template-data/README.md | base64)
+    curl -i --no-progress-meter -X PUT -H "Authorization: token ${CU_GIT_TOKEN}" --data "{ \"message\": \"Adding README.md\", \"content\" : \"${README_BASE64}\" }" "https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}/contents/README.md" >> log.txt
 
-    curl -i -H "Authorization: token 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" --data '{"name": "test123", "auto_init": true, "private": true}' https://api.github.com/user/repos
-
-    curl -X DELETE -H 'Authorization: token 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' https://api.github.com/repos/kori2000/test123
-
-    echo "  ${CGREEN}Done. Have a look inside the folder [templates]${CRESET}"
+    echo "  ${CGREEN}Done. ${CRESET}"
   
 fi
 
 # --+---------------------------------------------------------------
-#   | Add PVC, Index 1.
+#   | Delete GitHub Repository, Index 1.
 # --+---------------------------------------------------------------
 if [[ $CHOICE = "1" ]]
   then
   
-    OC_PVC_DEPLOY=$(find templates -name '*deploy*')
-    
-    if [[ $OC_PVC_DEPLOY = "" ]]
+    OC_TEMPLATE_DATA=$(find ./ -name 'template_data.yml')
+    if [[ $OC_TEMPLATE_DATA != "" ]]
       then 
-        echo "  ${CRED}No OC Templates found in folder [templates]${CRESET}"
-        exit
-      else
-        echo "  ${CGREEN}Found [${OC_PVC_DEPLOY}]. ${CRESET}"
-        APP_NAME=$(sed -n '6 p' $OC_PVC_DEPLOY | cut -c11-)
+        loadTemplateData
+
+    else
+
+        echo "  ${CBLUE}Git Token (Generate here: https://github.com/settings/tokens): ${CRESET}"
+        printf "  # "
+        read CU_GIT_TOKEN
+
+        echo "  ${CBLUE}Git User Name: ${CRESET}"
+        printf "  # "
+        read CU_GIT_USER
+
+        echo "  ${CBLUE}Git Repository Name (for default [like app-name] leave empty): ${CRESET}"
+        printf "  # "
+        read CU_GIT_NAME
+
         echo ""
+
     fi
-
-    echo "  ${CBLUE}Select existing PVC (for default pvc-${APP_NAME} leave empty): ${CRESET}"
-    printf "  # "
-    read CU_PVC_NAME
-
-    echo "  ${CBLUE}Choose a mount path (for example /usr/src/angular/backup/): ${CRESET}"
-    printf "  # "
-    read CU_PVC_MOUNT
-
-    echo "  ${CBLUE}Choose a sub mount path (OPTIONAL, leave empty): ${CRESET}"
-    printf "  # "
-    read CU_PVC_SUB_MOUNT
-
-    echo ""
 
     while true; do
         read -p "${CBLUE}  If everything is OK, continue with [y] or cancel with [c]: ${CRESET}" yn
@@ -348,85 +437,17 @@ if [[ $CHOICE = "1" ]]
             * ) echo "  Please answer [y]es or [c]ancel.";;
         esac
     done
-
-    echo "  ${CYELLOW}Updating OC Deploy Template in Folder [templates]${CRESET}"
     
     pgb 0
-
-    if [[ $CU_PVC_NAME = "" ]] 
-      then 
-        CU_PVC_NAME="pvc-${APP_NAME}"
-    fi
+    echo "  ${CYELLOW}Deleting Repository [${CU_GIT_NAME}]${CRESET}"
+    curl -X DELETE -H "Authorization: token ${CU_GIT_TOKEN}" https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}
     
-    pgb 50
-    echo "   +PVC Mount Path  "
-
-    CU_PVC_MOUNT=$(echo "$CU_PVC_MOUNT" | sed 's/\//\\\//g')
-    CU_PVC_SUB_MOUNT=$(echo "$CU_PVC_SUB_MOUNT" | sed 's/\//\\\//g')
-    
-    FIND_PVC_MOUNT_INIT="#PVC-MOUNT-INIT"
-    FIND_PVC_MOUNT_ANOTHER="#PVC-MOUNT-ANOTHER"
-
-    FIND_PVC_VOLUME_INIT="#PVC-VOLUME-INIT"
-    FIND_PVC_VOLUME_ANOTHER="#PVC-VOLUME-ANOTHER"
-
-    if [[ $(grep -w $FIND_PVC_MOUNT_INIT $OC_PVC_DEPLOY) != "" ]]
-      then
-
-        if [[ $CU_PVC_SUB_MOUNT = "" ]]
-          then
-            RPLC="volumeMounts:\n            - name: ${CU_PVC_NAME}\n              mountPath: ${CU_PVC_MOUNT}\n            ${FIND_PVC_MOUNT_ANOTHER}"
-          else
-            RPLC="volumeMounts:\n            - name: ${CU_PVC_NAME}\n              mountPath: ${CU_PVC_MOUNT}\n              subPath: ${CU_PVC_SUB_MOUNT}\n            ${FIND_PVC_MOUNT_ANOTHER}"
-        fi
-
-        # Linux Host use different sed cmd: sed -i | Mac: sed -i'' -e 
-        $(sed -i'' -e "s/${FIND_PVC_MOUNT_INIT}/${RPLC}/g" $OC_PVC_DEPLOY)
-
-      elif [[ $(grep -w $FIND_PVC_MOUNT_ANOTHER $OC_PVC_DEPLOY) != "" ]]
-        then
-
-        if [[ $CU_PVC_SUB_MOUNT = "" ]]
-          then
-            RPLC="- name: ${CU_PVC_NAME}\n              mountPath: ${CU_PVC_MOUNT}\n            ${FIND_PVC_MOUNT_ANOTHER}"
-          else
-            RPLC="- name: ${CU_PVC_NAME}\n              mountPath: ${CU_PVC_MOUNT}\n              subPath: ${CU_PVC_SUB_MOUNT}\n            ${FIND_PVC_MOUNT_ANOTHER}"
-        fi
-        
-        $(sed -i'' -e "s/${FIND_PVC_MOUNT_ANOTHER}/${RPLC}/g" $OC_PVC_DEPLOY)
-
-      else
-        echo ""
-        echo ""
-        echo "  ${CRED}Template corrupted. Please create a new one${CRESET}"
-        exit
-    fi
-        
-    pgb 75
-    echo "   +PVC Vol. Claim  "
-
-    if [[ $(grep -w $FIND_PVC_VOLUME_INIT $OC_PVC_DEPLOY) != "" ]]
-      then
-        RPLC="volumes:\n            - persistentVolumeClaim:\n                claimName: ${CU_PVC_NAME}\n              name: ${CU_PVC_NAME}\n            ${FIND_PVC_VOLUME_ANOTHER}"
-        $(sed -i'' -e "s/${FIND_PVC_VOLUME_INIT}/${RPLC}/g" $OC_PVC_DEPLOY)
-
-      elif [[ $(grep -w $FIND_PVC_VOLUME_ANOTHER $OC_PVC_DEPLOY) != "" ]]
-        then
-        RPLC="- persistentVolumeClaim:\n                claimName: ${CU_PVC_NAME}\n              name: ${CU_PVC_NAME}\n            ${FIND_PVC_VOLUME_ANOTHER}"
-        $(sed -i'' -e "s/${FIND_PVC_VOLUME_ANOTHER}/${RPLC}/g" $OC_PVC_DEPLOY)
-
-      else
-        echo ""
-        echo ""
-        echo "  ${CRED}Template corrupted. Please create a new one${CRESET}"
-        exit
-    fi
+    removeLocalFolder
 
     pgb 100
-    echo "   *Deploy updated  "
-    echo "  ${CGREEN}Done. Have a look inside the folder [templates]${CRESET}"
+    echo ""
 
-    rm $OC_PVC_DEPLOY-e # Delete Backup File
+    echo "  ${CGREEN}Done. ${CRESET}"
   
 fi
 
@@ -435,74 +456,9 @@ fi
 # --+---------------------------------------------------------------
 if [[ $CHOICE = "2" ]]
   then
-    
-    OC_LB_ROUTE=$(find templates -name '*route*')
-
-    if [[ $OC_LB_ROUTE = "" ]]
-      then 
-        echo "  ${CRED}No OC Templates found in folder [templates]${CRESET}"
-        exit
-      else
-        echo "  ${CGREEN}Found [${OC_LB_ROUTE}]. ${CRESET}"
-        APP_NAME=$(sed -n '6 p' $OC_LB_ROUTE | cut -c11-)
-        echo ""
-    fi
-
-    echo "  ${CBLUE}Set Domain (DNS has to be known and set up at ISGW): ${CRESET}"
-    printf "  # "
-    read CU_ISGW_DOMAIN
-
-    while true; do
-        read -p "${CBLUE}  If everything is OK, continue with [y] or cancel with [c]: ${CRESET}" yn
-        case $yn in
-            [Yy]* ) echo ""; break;;
-            [Cc]* ) echo ""; echo "${CYELLOW}  Cancelled. Bye, bye...${CRESET}";exit;;
-            * ) echo "  Please answer [y]es or [c]ancel.";;
-        esac
-    done
-
-    echo "  ${CYELLOW}Updating OC Route Template in Folder [templates]${CRESET}"
-    
-    pgb 0
-
-    CU_ISGW_DOMAIN=$(echo "$CU_ISGW_DOMAIN" | sed 's/\//\\\//g')
-
-    FIND_ISGW_INIT="#ISGW-INIT"
-    FIND_ISGW_HOST=$(sed -n '20 p' $OC_LB_ROUTE | cut -c11-)
-
-    pgb 50
-    echo "   +Activate ISGW   "
-
-    if [[ $(grep -w $FIND_ISGW_INIT $OC_LB_ROUTE) != "" ]]
-      then
-        RPLC="labels:\n      internet: \"yes\""
-        $(sed -i'' -e "s/${FIND_ISGW_INIT}/${RPLC}/g" $OC_LB_ROUTE)
-      else
-        echo ""
-        echo ""
-        echo "  ${CRED}Template corrupted. Please create a new one${CRESET}"
-        exit
-    fi
 
     pgb 75
     echo "   +Publish Domain  "
-
-    if [[ $(grep -w $FIND_ISGW_HOST $OC_LB_ROUTE) != "" ]]
-      then
-        RPLC="${CU_ISGW_DOMAIN}"
-        $(sed -i'' -e "s/${FIND_ISGW_HOST}/${RPLC}/g" $OC_LB_ROUTE)
-      else
-        echo ""
-        echo ""
-        echo "  ${CRED}Template corrupted. Please create a new one${CRESET}"
-        exit
-    fi
-
-    pgb 100
-    echo "   *Route updated  "
-    echo "  ${CGREEN}Done. Have a look inside the folder [templates]${CRESET}"
-
-    rm $OC_LB_ROUTE-e # Delete Backup File
 
 fi
 
@@ -512,78 +468,8 @@ fi
 if [[ $CHOICE = "3" ]]
   then
 
-    OC_LB_SERVICE=$(find templates -name '*service*')
-    
-    if [[ $OC_LB_SERVICE = "" ]]
-      then 
-        echo "  ${CRED}No OC Templates found in folder [templates]${CRESET}"
-        exit
-      else
-        echo "  ${CGREEN}Found [${OC_LB_SERVICE}]. ${CRESET}"
-        APP_NAME=$(sed -n '6 p' $OC_LB_SERVICE | cut -c11-)
-        echo ""
-    fi
-
-    echo "  ${CBLUE}Set Load Balancer Host (for default DB AWS leave empty): ${CRESET}"
-    printf "  # "
-    read CU_LB_HOST
-
-    while true; do
-        read -p "${CBLUE}  If everything is OK, continue with [y] or cancel with [c]: ${CRESET}" yn
-        case $yn in
-            [Yy]* ) echo ""; break;;
-            [Cc]* ) echo ""; echo "${CYELLOW}  Cancelled. Bye, bye...${CRESET}";exit;;
-            * ) echo "  Please answer [y]es or [c]ancel.";;
-        esac
-    done
-
-    echo "  ${CYELLOW}Updating OC Service Template in Folder [templates]${CRESET}"
-    
-    pgb 0
-
-    if [[ $CU_LB_HOST = "" ]] 
-      then 
-        CU_LB_HOST="service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0"
-    fi
-
-    CU_LB_HOST=$(echo "$CU_LB_HOST" | sed 's/\//\\\//g')
-
-    FIND_LOAD_BALANCER_INIT="#LOAD-BALANCER-INIT"
-    FIND_LOAD_BALANCER_POLC="ClusterIP"
-
     pgb 50
     echo "   +Load Balancer   "
-
-    if [[ $(grep -w $FIND_LOAD_BALANCER_INIT $OC_LB_SERVICE) != "" ]]
-      then
-        RPLC="annotations:\n      ${CU_LB_HOST}"
-        $(sed -i'' -e "s/${FIND_LOAD_BALANCER_INIT}/${RPLC}/g" $OC_LB_SERVICE)
-      else
-        echo ""
-        echo ""
-        echo "  ${CRED}Template corrupted. Please create a new one${CRESET}"
-        exit
-    fi
-
-    pgb 75
-    echo "   +Cluster Policy  "
-
-    if [[ $(grep -w $FIND_LOAD_BALANCER_POLC $OC_LB_SERVICE) != "" ]]
-      then
-        RPLC="LoadBalancer\n    clusterIP:\n    externalTrafficPolicy: Cluster"
-        $(sed -i'' -e "s/${FIND_LOAD_BALANCER_POLC}/${RPLC}/g" $OC_LB_SERVICE)
-      else
-        echo ""
-        echo ""
-        echo "  ${CRED}Template corrupted. Please create a new one${CRESET}"
-        exit
-    fi
-
-    pgb 100
-    echo "   *Service updated  "
-    echo "  ${CGREEN}Done. Have a look inside the folder [templates]${CRESET}"
-
-    rm $OC_LB_SERVICE-e # Delete Backup File
     
 fi
 

@@ -3,12 +3,14 @@ data:
   app_name: my-personal-api
   app_keywords: test1, test2, test3
   app_desc: some ai generated text date from keywords
-  app_exec: npm
+  app_exec: npm start
   server_port: 5555
+  local_folder: workspace
   git_token: xxx
+  git_user: kori2000
   git_name: my-personal-api
-  git_description: some short desc  
+  git_desc: some short desc  
   git_private: false
-  git_gitignore_template: node
+  git_gitignore_template: Node
   git_license_template: mit
   
