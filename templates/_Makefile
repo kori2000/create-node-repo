@@ -3,6 +3,6 @@ build:
 up:
 	docker-compose up -d
 	sleep 3
-	docker logs ${IN_DOCKER_CONTAINER}
+	docker logs app-cnt
 down:
 	docker-compose down

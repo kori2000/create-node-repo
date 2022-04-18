@@ -13,7 +13,7 @@ RUN npm install --loglevel=error
 COPY . .
 
 # Port exposed
-EXPOSE #SERVER_PORT
+EXPOSE ${IN_SERVER_PORT}
 
 # Run app
 CMD [ "npm", "start" ]

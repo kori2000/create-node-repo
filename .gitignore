@@ -105,5 +105,9 @@ dist
 
 # Custom
 .DS_Store
-template-data/*
+# template-data/*
+# template-data/public/*
+# template-data/public/js*
+# template-data/public/css*
+# template-data/src*
 log.txt

@@ -1,0 +1,26 @@
+{
+  "name": "create-node-repo",
+  "version": "1.0.0",
+  "description": "Creates a new repo with ai generated readme content based on keywords and setup a docker template for your node app",
+  "main": "server.js",
+  "scripts": {
+    "start": "node template-data/src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kori2000/create-node-repo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kori2000/create-node-repo/issues"
+  },
+  "homepage": "https://github.com/kori2000/create-node-repo#readme",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "moment": "^2.29.3",
+    "nodemon": "^2.0.15"
+  }
+}

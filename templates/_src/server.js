@@ -31,7 +31,7 @@ const server = http.createServer(app)
 const dotenv = require('dotenv')
 dotenv.config()
 
-const SERVER_PORT = process.env.SERVER_PORT || 5500
+const SERVER_PORT = process.env.SERVER_PORT || ${IN_SERVER_PORT}
 
 /**
  * ------------------------------
@@ -96,6 +96,6 @@ app.get("/someData", async (req, res) => {
     console.log("-------------------------------")
     console.log("  API started")
     console.log("----------------+--------------")
-    console.log(`| SERVER PORT...: ${SERVER_PORT}`)
+    console.log(`| SERVER PORT...:`, SERVER_PORT)
     console.log("----------------+--------------\n")
 })

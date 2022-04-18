@@ -160,10 +160,8 @@ loadTemplateData() {
 
   CU_APP_NAME=`cat template_data.yml | grep app_name | cut -d':' -f2 | cut -c 2-`
   CU_APP_KEYWORDS=`cat template_data.yml | grep app_keywords | cut -d':' -f2 | cut -c 2-`
-  CU_APP_DESC=`cat template_data.yml | grep app_desc | cut -d':' -f2 | cut -c 2-`
   CU_APP_EXEC=`cat template_data.yml | grep app_exec | cut -d':' -f2 | cut -c 2-`
   CU_SERVER_PORT=`cat template_data.yml | grep server_port | cut -d':' -f2 | cut -c 2-`
-  CU_LOCAL_FOLDER=`cat template_data.yml | grep local_folder | cut -d':' -f2 | cut -c 2-`
   CU_GIT_TOKEN=`cat template_data.yml | grep git_token | cut -d':' -f2 | cut -c 2-`
   CU_GIT_USER=`cat template_data.yml | grep git_user | cut -d':' -f2 | cut -c 2-`
   CU_GIT_NAME=`cat template_data.yml | grep git_name | cut -d':' -f2 | cut -c 2-`
@@ -172,19 +170,20 @@ loadTemplateData() {
   CU_GIT_IG_TEMPLATE=`cat template_data.yml | grep git_gitignore_template | cut -d':' -f2 | cut -c 2-`
   CU_GIT_LC_TEMPLATE=`cat template_data.yml | grep git_license_template | cut -d':' -f2 | cut -c 2-`
   
-  echo "  ${CCYAN=}CU_APP_NAME..........= $CU_APP_NAME ${CRESET}"
-  echo "  ${CCYAN=}CU_APP_KEYWORDS......= $CU_APP_KEYWORDS ${CRESET}"
-  echo "  ${CCYAN=}CU_APP_DESC..........= $CU_APP_DESC ${CRESET}"
-  echo "  ${CCYAN=}CU_APP_EXEC..........= $CU_APP_EXEC ${CRESET}"
-  echo "  ${CCYAN=}CU_SERVER_PORT.......= $CU_SERVER_PORT ${CRESET}"
-  echo "  ${CCYAN=}CU_LOCAL_FOLDER......= $CU_LOCAL_FOLDER ${CRESET}"
-  echo "  ${CCYAN=}CU_GIT_TOKEN.........= $CU_GIT_TOKEN ${CRESET}"
-  echo "  ${CCYAN=}CU_GIT_USER..........= $CU_GIT_USER ${CRESET}"
-  echo "  ${CCYAN=}CU_GIT_NAME..........= $CU_GIT_NAME ${CRESET}"
-  echo "  ${CCYAN=}CU_GIT_DESC..........= $CU_GIT_DESC ${CRESET}"
-  echo "  ${CCYAN=}CU_GIT_PRIVATE.......= $CU_GIT_PRIVATE ${CRESET}"
-  echo "  ${CCYAN=}CU_GIT_IG_TEMPLATE...= $CU_GIT_IG_TEMPLATE ${CRESET}"
-  echo "  ${CCYAN=}CU_GIT_LC_TEMPLATE...= $CU_GIT_LC_TEMPLATE ${CRESET}"
+  echo "  ${CCYAN=}----------------------${CRESET}"
+  echo "  ${CCYAN=}CU_APP_NAME..........= ${CRESET}${CYELLOW}$CU_APP_NAME ${CRESET}"
+  echo "  ${CCYAN=}CU_APP_KEYWORDS......= ${CRESET}${CYELLOW}$CU_APP_KEYWORDS ${CRESET}"  
+  echo "  ${CCYAN=}----------------------${CRESET}"
+  echo "  ${CCYAN=}CU_SERVER_PORT.......= ${CRESET}${CYELLOW}$CU_SERVER_PORT ${CRESET}"
+  echo "  ${CCYAN=}----------------------${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_TOKEN.........= ${CRESET}${CYELLOW}... ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_USER..........= ${CRESET}${CYELLOW}$CU_GIT_USER ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_NAME..........= ${CRESET}${CYELLOW}$CU_GIT_NAME ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_DESC..........= ${CRESET}${CYELLOW}$CU_GIT_DESC ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_PRIVATE.......= ${CRESET}${CYELLOW}$CU_GIT_PRIVATE ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_IG_TEMPLATE...= ${CRESET}${CYELLOW}$CU_GIT_IG_TEMPLATE ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_LC_TEMPLATE...= ${CRESET}${CYELLOW}$CU_GIT_LC_TEMPLATE ${CRESET}"
+  echo "  ${CCYAN=}----------------------${CRESET}"
   echo ""
 
 }
@@ -211,6 +210,44 @@ removeLocalFolder() {
       $(rm -rf ${REPO_FOLDER})
   fi
 }
+confirmData() {
+  while true; do
+        read -p "${CBLUE} If everything is OK, continue with [y] or cancel with [c]: ${CRESET}" yn
+        case $yn in
+            [Yy]* ) echo ""; break;;
+            [Cc]* ) echo ""; echo "${CYELLOW}  Cancelled. Bye, bye...${CRESET}"; echo "";exit;;
+            * ) echo "  Please answer [y]es or [c]ancel.";;
+        esac
+    done
+}
+
+clearTempFolder() {
+  DIR_TEMPLATE="./template-data/"
+  if [ -d "$DIR_TEMPLATE" ]
+    then
+      $(rm -rf template-data/)
+      $(mkdir template-data)
+      $(echo "" > template-data/.gitkeep)
+      $(mkdir template-data/src)
+      $(echo "" > template-data/src/.gitkeep)
+      $(mkdir template-data/public)
+      $(echo "" > template-data/public/.gitkeep)
+      $(mkdir template-data/public/js)
+      $(echo "" > template-data/public/js/.gitkeep)
+      $(mkdir template-data/public/css)
+      $(echo "" > template-data/public/css/.gitkeep)
+  fi
+}
+
+uploadFile() {
+  if [[ $3 != "" ]]
+    then        
+      curl -i --no-progress-meter -X PUT -H "Authorization: token ${CU_GIT_TOKEN}" --data "{ \"message\": \"Adding ${1}\", \"content\" : \"${2}\" }" "https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}/contents/${3}/${1}" >> log.txt
+    else
+      curl -i --no-progress-meter -X PUT -H "Authorization: token ${CU_GIT_TOKEN}" --data "{ \"message\": \"Adding ${1}\", \"content\" : \"${2}\" }" "https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}/contents/${1}" >> log.txt
+  fi
+}
+
 
 # --+---------------------------------------------------------------
 #   | END
@@ -225,7 +262,7 @@ if [[ uname = "Darwin" ]]
 fi
 
 # Set Parameter Values
-options=(" 🚀 Create new blank GitHub Repository" " 💀 Remove GitHub Repository " " 🔥 Add Docker Image" " ✨ Add NodeJS API" "Quit")
+options=(" 🚀 Create new blank GitHub Repository" " 💀 Remove GitHub Repository " " 🔥 ...new Repository with NodeJS" "Quit")
 
 # Draw Selection Menu
 select_option "${options[@]}"
@@ -253,150 +290,42 @@ if [[ $CHOICE = "0" ]]
     if [[ $OC_TEMPLATE_DATA != "" ]]
       then 
         loadTemplateData
-
       else
-
-        echo "  ${CBLUE}Your Application Name (like for example api-gateway): ${CRESET}"
-        printf "  # "
-        read CU_APP_NAME
-
-        echo "  ${CBLUE}Some Application Keywords for ai generated text (blockchain, web3, weather, api, ...): ${CRESET}"
-        printf "  # "
-        read CU_APP_KEYWORDS
-
-        echo "  ${CBLUE}Application Description (for default leave empty): ${CRESET}"
-        printf "  # "
-        read CU_APP_DESC
-
-        echo "  ${CBLUE}Application TCP Port (any port other than 80 or 443): ${CRESET}"
-        printf "  # "
-        read CU_SERVER_PORT
-
-        echo "  ${CBLUE}Your Application run cmd (npm run start --param=value): ${CRESET}"
-        printf "  # "
-        read CU_APP_EXEC
-
-        echo "  ${CBLUE}Git Token (Generate here: https://github.com/settings/tokens): ${CRESET}"
-        printf "  # "
-        read CU_GIT_TOKEN
-
-        echo "  ${CBLUE}Git User Name: ${CRESET}"
-        printf "  # "
-        read CU_GIT_USER
-
-        echo "  ${CBLUE}Git Repository Name (for default [like app-name] leave empty): ${CRESET}"
-        printf "  # "
-        read CU_GIT_NAME
-
-        echo "  ${CBLUE}Git Repository Description (for default [like app-desc] leave empty): ${CRESET}"
-        printf "  # "
-        read CU_GIT_DESC
-
-        echo "  ${CBLUE}Git Repository is private (for defaul [is false] leave empty): ${CRESET}"
-        printf "  # "
-        read CU_GIT_PRIVATE
-
-        echo "  ${CBLUE}Git Repository with Ignore Template (for defaul [node] leave empty): ${CRESET}"
-        printf "  # "
-        read CU_GIT_IG_TEMPLATE
-
-        echo "  ${CBLUE}Git Repository with License Template (for defaul [MIT] leave empty): ${CRESET}"
-        printf "  # "
-        read CU_GIT_LC_TEMPLATE
-
+        echo "  ${CBLUE} 🧬 Please modify the [template_data.yml] file to continue... ${CRESET}"
         echo ""
-
+        exit 0
     fi
 
-    while true; do
-        read -p "${CBLUE} If everything is OK, continue with [y] or cancel with [c]: ${CRESET}" yn
-        case $yn in
-            [Yy]* ) echo ""; break;;
-            [Cc]* ) echo ""; echo "${CYELLOW}  Cancelled. Bye, bye...${CRESET}";exit;;
-            * ) echo "  Please answer [y]es or [c]ancel.";;
-        esac
-    done
+    confirmData
 
-    echo "  ${CYELLOW}Generating new OC Templates for Application [${CU_APP_NAME}] ${CRESET}"
-
-    # Clear template folder
-    DIR_TEMPLATE="./template-data/"
-    if [ -d "$DIR_TEMPLATE" ]
-      then
-        $(rm -rf template-data/)
-        $(mkdir template-data)
-        $(echo "" > template-data/.gitkeep)
-    fi
+    echo "  ${CYELLOW}Creating new blank Repository for Application [${CU_APP_NAME}] ${CRESET}"
 
     pgb 0
-    
-    if [[ $CU_GIT_NAME = "" ]] 
-      then 
-        CU_GIT_NAME=$CU_APP_NAME
-    fi
+    clearTempFolder
 
-    if [[ $CU_GIT_DESC = "" ]] 
-      then 
-        CU_GIT_DESC=$CU_APP_DESC
-    fi
-
-    if [[ $CU_GIT_PRIVATE = "" ]] 
-      then 
-        CU_GIT_PRIVATE=false
-    fi
-
-    if [[ $CU_GIT_IG_TEMPLATE = "" ]] 
-      then 
-        CU_GIT_IG_TEMPLATE="node"
-    fi
-
-    if [[ $CU_GIT_LC_TEMPLATE = "" ]] 
-      then 
-        CU_GIT_LC_TEMPLATE="mit"
-    fi
-    
     pgb 25
-
+    echo "   Adjusting README.md    "
     export IN_APP_NAME=$CU_APP_NAME
-    export IN_APP_DESC=$CU_APP_DESC
-
-    export IN_DOCKER_CONTAINER=$CU_APP_NAME
-    export IN_SERVER_PORT=$CU_SERVER_PORT
-
-    # export IN_OC_CLUSTER=$CU_OC_CLUSTER
-    # export IN_APP_NAME=$CU_APP_NAME
-    # export IN_HOST_DNS=$CU_HOST_DNS
-    # export IN_TCP_PORT=$CU_TCP_PORT
-    # export IN_APP_EXEC=$CU_APP_EXEC
-    # export IN_GIT_REPO=$CU_GIT_REPO
-    # export IN_GIT_BRANCH=$CU_GIT_BRANCH
-    # export IN_APP_STAGE=$CU_APP_STAGE
-    # export IN_GIT_OC_TOKEN=$CU_GIT_OC_TOKEN
-
-    # export IN_PVC=""
-
-    
-    pgb 25
-    echo "   *README.md  "
+    export IN_APP_DESC=$CU_GIT_DESC
     envsubst < templates/_README.md > template-data/README.md
 
     pgb 50
-    echo "   *Create Repository    "
+    echo "   Creating Repository    "
     PAYLOAD="{ \"name\": \"${CU_GIT_NAME}\", \"description\": \"${CU_GIT_DESC}\", \"auto_init\": false, \"private\": ${CU_GIT_PRIVATE}, \"license_template\": \"${CU_GIT_LC_TEMPLATE}\", \"gitignore_template\": \"${CU_GIT_IG_TEMPLATE}\" }"
 
-    echo "   ==> PAYLOAD... " #${PAYLOAD}"
     curl -i --no-progress-meter -H "Authorization: token ${CU_GIT_TOKEN}" --data "${PAYLOAD}" https://api.github.com/user/repos >> log.txt
     
     pgb 75
-    echo "   ==> CREATED: https://github.com/${CU_GIT_USER}/${CU_GIT_NAME}"
-    # createLocalFolder
+    echo "   Uploading Files        "
+    README_BASE64=$(cat template-data/README.md | base64 -w0)
 
-    pgb 100
-    echo "   *UPLOAD Readme.md"
-    README_BASE64=$(cat template-data/README.md | base64)
     curl -i --no-progress-meter -X PUT -H "Authorization: token ${CU_GIT_TOKEN}" --data "{ \"message\": \"Adding README.md\", \"content\" : \"${README_BASE64}\" }" "https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}/contents/README.md" >> log.txt
 
-    echo "  ${CGREEN}Done. ${CRESET}"
+    pgb 100
+    echo "   Done                   "
+    echo ""
+    echo "  ${CGREEN}Your Repository:${CRESET} https://github.com/${CU_GIT_USER}/${CU_GIT_NAME}"
+    echo ""
   
 fi
 
@@ -410,68 +339,114 @@ if [[ $CHOICE = "1" ]]
     if [[ $OC_TEMPLATE_DATA != "" ]]
       then 
         loadTemplateData
-
-    else
-
-        echo "  ${CBLUE}Git Token (Generate here: https://github.com/settings/tokens): ${CRESET}"
-        printf "  # "
-        read CU_GIT_TOKEN
-
-        echo "  ${CBLUE}Git User Name: ${CRESET}"
-        printf "  # "
-        read CU_GIT_USER
-
-        echo "  ${CBLUE}Git Repository Name (for default [like app-name] leave empty): ${CRESET}"
-        printf "  # "
-        read CU_GIT_NAME
-
+      else
+        echo "  ${CBLUE} 🧬 Please modify the [template_data.yml] file to continue... ${CRESET}"
         echo ""
-
+        exit 0
     fi
 
-    while true; do
-        read -p "${CBLUE}  If everything is OK, continue with [y] or cancel with [c]: ${CRESET}" yn
-        case $yn in
-            [Yy]* ) echo ""; break;;
-            [Cc]* ) echo ""; echo "${CYELLOW}  Cancelled. Bye, bye...${CRESET}";exit;;
-            * ) echo "  Please answer [y]es or [c]ancel.";;
-        esac
-    done
+    confirmData
     
     pgb 0
-    echo "  ${CYELLOW}Deleting Repository [${CU_GIT_NAME}]${CRESET}"
+    echo "   Deleting Repository [${CU_GIT_NAME}]"
     curl -X DELETE -H "Authorization: token ${CU_GIT_TOKEN}" https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}
-    
-    removeLocalFolder
-
+       
     pgb 100
+    echo "   Done                               "
     echo ""
-
-    echo "  ${CGREEN}Done. ${CRESET}"
   
 fi
 
 # --+---------------------------------------------------------------
-#   | Add ISGW Proxy, Index 2.
+#   | NodeJS Application Repository
 # --+---------------------------------------------------------------
 if [[ $CHOICE = "2" ]]
   then
 
-    pgb 75
-    echo "   +Publish Domain  "
+    OC_TEMPLATE_DATA=$(find ./ -name 'template_data.yml')
+    if [[ $OC_TEMPLATE_DATA != "" ]]
+      then 
+        loadTemplateData
+    else
+        echo "  ${CBLUE} 🧬 Please modify the [template_data.yml] file to continue... ${CRESET}"
+        echo ""
+        exit 0
+    fi
 
-fi
+    confirmData
 
-# --+---------------------------------------------------------------
-#   | Add Load Balancer, Index 3.
-# --+---------------------------------------------------------------
-if [[ $CHOICE = "3" ]]
-  then
+    echo "  ${CYELLOW}Creating new Repository for NodeJS Application [${CU_APP_NAME}] ${CRESET}"
 
+    pgb 0
+    clearTempFolder
+        
+    pgb 25
+    echo "   Adjusting README.md    "
+    export IN_APP_NAME=$CU_APP_NAME
+    export IN_APP_DESC=$CU_GIT_DESC
+    envsubst < templates/_README.md > template-data/README.md
+
+    pgb 35
+    echo "   Adjusting Makefile     "
+    export IN_DOCKER_CONTAINER=$CU_APP_NAME
+    envsubst < templates/_Makefile > template-data/Makefile
+
+    pgb 45
+    echo "   Adjusting Dockerfiles  "
+    export IN_SERVER_PORT=$CU_SERVER_PORT
+    envsubst < templates/_Dockerfile > template-data/Dockerfile
+    envsubst < templates/_docker-compose.yml > template-data/docker-compose.yml
+    envsubst < templates/_.env > template-data/.env
+
+    pgb 45
+    echo "   Adjusting Template Fls "
+    export IN_GIT_USER=$CU_GIT_USER
+    envsubst < templates/_package.json > template-data/package.json
+    envsubst < templates/_src/server.js > template-data/src/server.js
+    envsubst < templates/_public/index.html > template-data/public/index.html
+    envsubst < templates/_public/js/helper.js > template-data/public/js/helper.js
+    envsubst < templates/_public/css/style.css > template-data/public/css/style.css
+   
     pgb 50
-    echo "   +Load Balancer   "
+    echo "   Creating Repository    "
+    PAYLOAD="{ \"name\": \"${CU_GIT_NAME}\", \"description\": \"${CU_GIT_DESC}\", \"auto_init\": false, \"private\": ${CU_GIT_PRIVATE}, \"license_template\": \"${CU_GIT_LC_TEMPLATE}\", \"gitignore_template\": \"${CU_GIT_IG_TEMPLATE}\" }"
+
+    curl -i --no-progress-meter -H "Authorization: token ${CU_GIT_TOKEN}" --data "${PAYLOAD}" https://api.github.com/user/repos >> log.txt
     
+    pgb 65
+    echo "   Upload: README.md      "
+    uploadFile "README.md" $(cat template-data/README.md | base64 -w0)
+
+    pgb 75
+    echo "   Upload: MakeFile       "
+    uploadFile "Makefile" $(cat template-data/Makefile | base64 -w0)
+
+    pgb 85
+    echo "   Upload: Dockerfiles    "
+    uploadFile "Dockerfile" $(cat template-data/Dockerfile | base64 -w0)
+    uploadFile "docker-compose.yml" $(cat template-data/docker-compose.yml | base64 -w0)
+    uploadFile ".env" $(cat template-data/.env | base64 -w0)
+
+    pgb 90
+    echo "   Upload: Template Fls   "
+    uploadFile "package.json" $(cat template-data/package.json | base64 -w0)
+    uploadFile "server.js" $(cat template-data/src/server.js | base64 -w0) "src"
+    uploadFile "index.html" $(cat template-data/public/index.html | base64 -w0) "public"
+    uploadFile "helper.js" $(cat template-data/public/js/helper.js | base64 -w0) "public/js"
+    uploadFile "style.css" $(cat template-data/public/css/style.css | base64 -w0) "public/css"    
+
+    pgb 100
+    echo "   Done                   "
+    echo ""
+    echo "  ${CGREEN}Your Repository:${CRESET} https://github.com/${CU_GIT_USER}/${CU_GIT_NAME}"
+    echo "                   git@github.com:${CU_GIT_USER}/${CU_GIT_NAME}"
+    
+    echo ""
+
 fi
+
+#------------------------------------------------------------------
+#------------------------------------------------------------------
 
 # For Mac, # Unselect GNU sed
 if [[ uname = "Darwin" ]] 
