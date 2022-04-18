@@ -240,11 +240,11 @@ clearTempFolder() {
 }
 
 uploadFile() {
-  if [[ uname="Darwin" ]]
-  then
-    BASE64_CONTENT=$(cat ${2} | base64)
-  else
-    BASE64_CONTENT=$(cat ${2} | base64 -w0)
+  if [ "$(uname)" == "Darwin" ]
+    then
+      BASE64_CONTENT=$(cat ${2} | base64)
+    else
+      BASE64_CONTENT=$(cat ${2} | base64 -w0)
   fi
 
   if [[ $3 != "" ]]
