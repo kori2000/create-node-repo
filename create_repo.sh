@@ -240,11 +240,18 @@ clearTempFolder() {
 }
 
 uploadFile() {
+  if [[ uname="Darwin" ]]
+  then
+    BASE64_CONTENT=$(cat ${2} | base64)
+  else
+    BASE64_CONTENT=$(cat ${2} | base64 -w0)
+  fi
+
   if [[ $3 != "" ]]
     then        
-      curl -i --no-progress-meter -X PUT -H "Authorization: token ${CU_GIT_TOKEN}" --data "{ \"message\": \"Adding ${1}\", \"content\" : \"${2}\" }" "https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}/contents/${3}/${1}" >> log.txt
+      curl -i --no-progress-meter -X PUT -H "Authorization: token ${CU_GIT_TOKEN}" --data "{ \"message\": \"Adding ${1}\", \"content\" : \"${BASE64_CONTENT}\" }" "https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}/contents/${3}/${1}" >> log.txt
     else
-      curl -i --no-progress-meter -X PUT -H "Authorization: token ${CU_GIT_TOKEN}" --data "{ \"message\": \"Adding ${1}\", \"content\" : \"${2}\" }" "https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}/contents/${1}" >> log.txt
+      curl -i --no-progress-meter -X PUT -H "Authorization: token ${CU_GIT_TOKEN}" --data "{ \"message\": \"Adding ${1}\", \"content\" : \"${BASE64_CONTENT}\" }" "https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}/contents/${1}" >> log.txt
   fi
 }
 
@@ -317,9 +324,7 @@ if [[ $CHOICE = "0" ]]
     
     pgb 75
     echo "   Uploading Files        "
-    README_BASE64=$(cat template-data/README.md | base64 -w0)
-
-    curl -i --no-progress-meter -X PUT -H "Authorization: token ${CU_GIT_TOKEN}" --data "{ \"message\": \"Adding README.md\", \"content\" : \"${README_BASE64}\" }" "https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}/contents/README.md" >> log.txt
+    uploadFile "README.md" "template-data/README.md"
 
     pgb 100
     echo "   Done                   "
@@ -410,30 +415,29 @@ if [[ $CHOICE = "2" ]]
     pgb 50
     echo "   Creating Repository    "
     PAYLOAD="{ \"name\": \"${CU_GIT_NAME}\", \"description\": \"${CU_GIT_DESC}\", \"auto_init\": false, \"private\": ${CU_GIT_PRIVATE}, \"license_template\": \"${CU_GIT_LC_TEMPLATE}\", \"gitignore_template\": \"${CU_GIT_IG_TEMPLATE}\" }"
-
     curl -i --no-progress-meter -H "Authorization: token ${CU_GIT_TOKEN}" --data "${PAYLOAD}" https://api.github.com/user/repos >> log.txt
     
     pgb 65
     echo "   Upload: README.md      "
-    uploadFile "README.md" $(cat template-data/README.md | base64 -w0)
+    uploadFile "README.md" "template-data/README.md"
 
     pgb 75
     echo "   Upload: MakeFile       "
-    uploadFile "Makefile" $(cat template-data/Makefile | base64 -w0)
+    uploadFile "Makefile" "template-data/Makefile"
 
     pgb 85
     echo "   Upload: Dockerfiles    "
-    uploadFile "Dockerfile" $(cat template-data/Dockerfile | base64 -w0)
-    uploadFile "docker-compose.yml" $(cat template-data/docker-compose.yml | base64 -w0)
-    uploadFile ".env" $(cat template-data/.env | base64 -w0)
+    uploadFile "Dockerfile" "template-data/Dockerfile"
+    uploadFile "docker-compose.yml" "template-data/docker-compose.yml"
+    uploadFile ".env" "template-data/.env"
 
     pgb 90
     echo "   Upload: Template Fls   "
-    uploadFile "package.json" $(cat template-data/package.json | base64 -w0)
-    uploadFile "server.js" $(cat template-data/src/server.js | base64 -w0) "src"
-    uploadFile "index.html" $(cat template-data/public/index.html | base64 -w0) "public"
-    uploadFile "helper.js" $(cat template-data/public/js/helper.js | base64 -w0) "public/js"
-    uploadFile "style.css" $(cat template-data/public/css/style.css | base64 -w0) "public/css"    
+    uploadFile "package.json" "template-data/package.json"
+    uploadFile "server.js" "template-data/src/server.js" "src"
+    uploadFile "index.html" "template-data/public/index.html" "public"
+    uploadFile "helper.js" "template-data/public/js/helper.js" "public/js"
+    uploadFile "style.css" "template-data/public/css/style.css" "public/css"    
 
     pgb 100
     echo "   Done                   "
