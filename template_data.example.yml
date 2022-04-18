@@ -1,0 +1,15 @@
+# -----------------------------------------------------------------------------
+# An example Template File for 
+# To generate a Token, visit here: https://github.com/settings/tokens/new
+# -----------------------------------------------------------------------------
+data:
+  app_name: my-nodejs-api
+  app_keywords: API, NodeJS with Docker
+  server_port: 4600
+  git_token: ghp_xxxxxxxxxx
+  git_user: kori2000
+  git_name: my-nodejs-api
+  git_desc: This is a description for the example API with NodeJS
+  git_private: true
+  git_gitignore_template: Node
+  git_license_template: mit

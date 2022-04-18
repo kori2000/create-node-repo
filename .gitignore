@@ -111,3 +111,4 @@ template-data/public/js*
 template-data/public/css*
 template-data/src*
 log.txt
+# template_data.yml
