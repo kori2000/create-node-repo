@@ -12,17 +12,20 @@ Please adjust the .env file before starting the Container.
 # Replace .ent.test with .env to work in prod enviroment
 
 # Server Settings
-SERVER_PORT=#SERVER_PORT
+SERVER_PORT=${IN_SERVER_PORT}
 ```
 
 ## Starting
 
 ```bash
-# Build docker image
+# 🏗️ Build docker image
 make build
 
-# Start docker container
+# 🚀 Start docker container
 make up
+
+# 🛑 Stop docker container
+make down
 ```
 
 ## Contributing

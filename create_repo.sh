@@ -384,6 +384,7 @@ if [[ $CHOICE = "2" ]]
     echo "   Adjusting README.md    "
     export IN_APP_NAME=$CU_APP_NAME
     export IN_APP_DESC=$CU_GIT_DESC
+    export IN_SERVER_PORT=$CU_SERVER_PORT
     envsubst < templates/_README.md > template-data/README.md
 
     pgb 35
@@ -392,8 +393,7 @@ if [[ $CHOICE = "2" ]]
     envsubst < templates/_Makefile > template-data/Makefile
 
     pgb 45
-    echo "   Adjusting Dockerfiles  "
-    export IN_SERVER_PORT=$CU_SERVER_PORT
+    echo "   Adjusting Dockerfiles  "    
     envsubst < templates/_Dockerfile > template-data/Dockerfile
     envsubst < templates/_docker-compose.yml > template-data/docker-compose.yml
     envsubst < templates/_.env > template-data/.env
