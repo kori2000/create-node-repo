@@ -23,8 +23,8 @@ Please adjust the template_data.yml file before the script.
   git_name: # your-app-name
   git_desc: # this can be manually added, or will be replaced from AI
   git_private: # true for private repo
-  git_gitignore_template: # ignore templates from gitub, example: https://github.com/github/gitignore
-  git_license_template: # license template from github, example: https://docs.github.com/en/rest/reference/licenses
+  git_gitignore_template: # ignore templates from gitub
+  git_license_template: # license template from github
 
 ```
 
@@ -40,6 +40,7 @@ Please adjust the template_data.yml file before the script.
 $ ./create_repo.sh
 
 ```
+[![asciicast](https://asciinema.org/a/TEPXmrE7jalXy33qSTfglRV7v.svg)](https://asciinema.org/a/TEPXmrE7jalXy33qSTfglRV7v)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
