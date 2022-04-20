@@ -40,7 +40,15 @@ The variable `git_desc` serves as a basis for the AI to generate a new descripti
 $ ./create_repo.sh
 
 ```
-[![asciicast](https://asciinema.org/a/TEPXmrE7jalXy33qSTfglRV7v.svg)](https://asciinema.org/a/TEPXmrE7jalXy33qSTfglRV7v)
+
+### AI Text Generator Example
+Here is a simple example how to create an AI generated text from the `template_data.yml` file:
+[![asciicast](https://asciinema.org/a/488687.svg)](https://asciinema.org/a/488687)
+
+
+### Creating new Repository with NodeJS App
+An illustration of how the new repository will be created:
+[![asciicast](https://asciinema.org/a/488688.svg)](https://asciinema.org/a/488688)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
