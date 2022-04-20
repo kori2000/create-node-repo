@@ -8,7 +8,7 @@ With this script generator you can create new fully automated repositories. The 
 
 ## Installation
 
-Please adjust the template_data.yml file before the script.
+Please adjust the `template_data.yml` file before the script.
 
 ```bash
 # Replace .template_data.example.yml with 
@@ -25,6 +25,8 @@ Please adjust the template_data.yml file before the script.
   git_license_template: # license template from github
 
 ```
+
+The variable `git_desc` serves as a basis for the AI to generate a new description text
 
 - Generating new GitHub Token: https://github.com/settings/tokens/new
 - GitHub Ignore Templates: https://github.com/github/gitignore
