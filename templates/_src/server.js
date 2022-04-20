@@ -42,7 +42,7 @@ const SERVER_PORT = process.env.SERVER_PORT || ${IN_SERVER_PORT}
 // Dasboard HTML Page
 app.get("/", async (req, res) => {    
     res.setHeader('Content-Type', 'text/html')
-    res.status(200).sendFile(`${public_folder}index.htm`)
+    res.status(200).sendFile(`${public_folder}index.html`)
 })
 
 // Return some data

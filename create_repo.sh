@@ -158,8 +158,6 @@ loadTemplateData() {
   echo "  ${CGREEN}Template data configurtion located [template_data.yml]...${CRESET}"
   echo ""
 
-  CU_APP_NAME=`cat template_data.yml | grep app_name | cut -d':' -f2 | cut -c 2-`
-  CU_APP_KEYWORDS=`cat template_data.yml | grep app_keywords | cut -d':' -f2 | cut -c 2-`
   CU_APP_EXEC=`cat template_data.yml | grep app_exec | cut -d':' -f2 | cut -c 2-`
   CU_SERVER_PORT=`cat template_data.yml | grep server_port | cut -d':' -f2 | cut -c 2-`
   CU_GIT_TOKEN=`cat template_data.yml | grep git_token | cut -d':' -f2 | cut -c 2-`
@@ -170,13 +168,8 @@ loadTemplateData() {
   CU_GIT_IG_TEMPLATE=`cat template_data.yml | grep git_gitignore_template | cut -d':' -f2 | cut -c 2-`
   CU_GIT_LC_TEMPLATE=`cat template_data.yml | grep git_license_template | cut -d':' -f2 | cut -c 2-`
   
-  echo "  ${CCYAN=}----------------------${CRESET}"
-  echo "  ${CCYAN=}CU_APP_NAME..........= ${CRESET}${CYELLOW}$CU_APP_NAME ${CRESET}"
-  echo "  ${CCYAN=}CU_APP_KEYWORDS......= ${CRESET}${CYELLOW}$CU_APP_KEYWORDS ${CRESET}"  
-  echo "  ${CCYAN=}----------------------${CRESET}"
   echo "  ${CCYAN=}CU_SERVER_PORT.......= ${CRESET}${CYELLOW}$CU_SERVER_PORT ${CRESET}"
-  echo "  ${CCYAN=}----------------------${CRESET}"
-  echo "  ${CCYAN=}CU_GIT_TOKEN.........= ${CRESET}${CYELLOW}... ${CRESET}"
+  echo "  ${CCYAN=}CU_GIT_TOKEN.........= ${CRESET}${CYELLOW}........ ${CRESET}"
   echo "  ${CCYAN=}CU_GIT_USER..........= ${CRESET}${CYELLOW}$CU_GIT_USER ${CRESET}"
   echo "  ${CCYAN=}CU_GIT_NAME..........= ${CRESET}${CYELLOW}$CU_GIT_NAME ${CRESET}"
   echo "  ${CCYAN=}CU_GIT_DESC..........= ${CRESET}${CYELLOW}$CU_GIT_DESC ${CRESET}"
@@ -215,7 +208,7 @@ confirmData() {
         read -p "${CBLUE} If everything is OK, continue with [y] or cancel with [c]: ${CRESET}" yn
         case $yn in
             [Yy]* ) echo ""; break;;
-            [Cc]* ) echo ""; echo "${CYELLOW}  Cancelled. Bye, bye...${CRESET}"; echo "";exit;;
+            [Cc]* ) echo ""; echo "${CYELLOW}  Cancelled. Bye, bye...${CRESET}";exit;;
             * ) echo "  Please answer [y]es or [c]ancel.";;
         esac
     done
@@ -269,7 +262,7 @@ if [[ uname = "Darwin" ]]
 fi
 
 # Set Parameter Values
-options=(" 🚀 Create new blank GitHub Repository" " 💀 Remove GitHub Repository " " 🔥 ...new Repository with NodeJS" "Quit")
+options=(" 🚀 Create new blank GitHub Repository" " 💀 Remove GitHub Repository " " 🔥 ...new Repository with NodeJS" " 🍄 Preview AI generated Text" "Quit")
 
 # Draw Selection Menu
 select_option "${options[@]}"
@@ -305,14 +298,14 @@ if [[ $CHOICE = "0" ]]
 
     confirmData
 
-    echo "  ${CYELLOW}Creating new blank Repository for Application [${CU_APP_NAME}] ${CRESET}"
+    echo "  ${CYELLOW}Creating new blank Repository for Application [${CU_GIT_NAME}] ${CRESET}"
 
     pgb 0
     clearTempFolder
 
     pgb 25
     echo "   Adjusting README.md    "
-    export IN_APP_NAME=$CU_APP_NAME
+    export IN_APP_NAME=$CU_GIT_NAME
     export IN_APP_DESC=$CU_GIT_DESC
     envsubst < templates/_README.md > template-data/README.md
 
@@ -357,7 +350,7 @@ if [[ $CHOICE = "1" ]]
     curl -X DELETE -H "Authorization: token ${CU_GIT_TOKEN}" https://api.github.com/repos/${CU_GIT_USER}/${CU_GIT_NAME}
        
     pgb 100
-    echo "   Done                               "
+    echo "   ${CGREEN}Done${CRESET}                   "
     echo ""
   
 fi
@@ -380,21 +373,21 @@ if [[ $CHOICE = "2" ]]
 
     confirmData
 
-    echo "  ${CYELLOW}Creating new Repository for NodeJS Application [${CU_APP_NAME}] ${CRESET}"
+    echo "  ${CYELLOW}Creating new Repository for NodeJS Application [${CU_GIT_NAME}] ${CRESET}"
 
     pgb 0
     clearTempFolder
         
     pgb 25
     echo "   Adjusting README.md    "
-    export IN_APP_NAME=$CU_APP_NAME
+    export IN_APP_NAME=$CU_GIT_NAME
     export IN_APP_DESC=$CU_GIT_DESC
     export IN_SERVER_PORT=$CU_SERVER_PORT
     envsubst < templates/_README.md > template-data/README.md
 
     pgb 35
     echo "   Adjusting Makefile     "
-    export IN_DOCKER_CONTAINER=$CU_APP_NAME
+    export IN_DOCKER_CONTAINER=$CU_GIT_NAME
     envsubst < templates/_Makefile > template-data/Makefile
 
     pgb 45
@@ -440,11 +433,51 @@ if [[ $CHOICE = "2" ]]
     uploadFile "style.css" "template-data/public/css/style.css" "public/css"    
 
     pgb 100
-    echo "   Done                   "
+    echo "   ${CGREEN}Done${CRESET}                   "
     echo ""
     echo "  ${CGREEN}Your Repository:${CRESET} https://github.com/${CU_GIT_USER}/${CU_GIT_NAME}"
     echo "                   git@github.com:${CU_GIT_USER}/${CU_GIT_NAME}"
     
+    echo ""
+
+fi
+
+# --+---------------------------------------------------------------
+#   | Show AI generated Text, Index 3
+# --+---------------------------------------------------------------
+if [[ $CHOICE = "3" ]]
+  then
+    
+    OC_TEMPLATE_DATA=$(find ./ -name 'template_data.yml')
+    if [[ $OC_TEMPLATE_DATA != "" ]]
+      then 
+        loadTemplateData
+    else
+        echo "  ${CBLUE} 🧬 Please modify the [template_data.yml] file to continue... ${CRESET}"
+        echo ""
+        exit 0
+    fi
+
+    confirmData
+
+    echo "  ${CYELLOW}Retrieving new Description from AI for [${CU_GIT_NAME}]... ${CRESET}"
+
+    pgb 0
+    echo "   Sending request        "
+    AI_TXT=$(curl --no-progress-meter -X POST https://ai-txt.beta.de.com/text -H "Content-Type: application/json" --data "{\"keywords\": \"${CU_GIT_DESC}\"}")
+    
+    pgb 50
+    echo "   Alternating data       "
+    echo ""
+
+    pgb 100
+    echo "   ${CGREEN}Done${CRESET}                   "
+    echo ""
+
+    echo "${CYELLOW}>_>_>${CRESET} ${AI_TXT} ${CYELLOW}<_<_<${CRESET}"
+    echo ""
+
+    echo "   ${CYELLOW}🌈 If you like the text, copy and paste it into your ${CRESET}${CCYAN}template_data.yml${CYELLOW} file into the${CRESET} ${CCYAN}CU_GUT_DESC${CRESET} ${CYELLOW}variable...${CRESET}"
     echo ""
 
 fi

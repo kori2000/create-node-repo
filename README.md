@@ -15,13 +15,11 @@ Please adjust the template_data.yml file before the script.
 # template_data.yml to proceed
 
 # Settings
-  app_name: # your-app-name
-  app_keywords: # some keywords for AI
   server_port: # server port
   git_token: # your gitub token
   git_user: # your gituser name
   git_name: # your-app-name
-  git_desc: # this can be manually added, or will be replaced from AI
+  git_desc: # Simple sentence, or keywords for the AI
   git_private: # true for private repo
   git_gitignore_template: # ignore templates from gitub
   git_license_template: # license template from github
